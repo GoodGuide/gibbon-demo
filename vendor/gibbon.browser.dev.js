@@ -5831,6 +5831,22 @@ stdlib = Gibbon.stdlib = (function() {
         return Core.fail('missing');
       }
     },
+    assert: {
+      type: parse.type('assert { %a -> bool } = %a -> %a'),
+      compile: function(input, _arg) {
+        var cond;
+        cond = _arg[0];
+        return cond.app(input).branch(input, Core.fail('assertion failed'));
+      }
+    },
+    "assert-any": {
+      type: parse.type('assert-any = [%a] -> [%a]'),
+      compile: function(input, _arg) {
+        var cond;
+        cond = _arg[0];
+        return input.len().op2('>', Core.constant(0)).branch(input, Core.fail('empty list'));
+      }
+    },
     blank: {
       type: parse.type('blank = % -> %a'),
       compile: function() {

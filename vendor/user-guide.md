@@ -51,10 +51,13 @@ A *pair* is two expressions joined by a colon:
 1 : 'foo'
 ~~~
 
-The type of the above expression is `(pair numeric string)`.
+The result is an ordered pair of values.  The values can be of different types, and the values can be
+extracted with the `first` and `second` functions (see `List of Functions`).
+
 ### block
-A *block* is a gibbon expression that can be executed in a different context (see `Context, Queries`).
+A *block* is a gibbon expression that can be executed in a different context (see `Blocks, Context`).
 It is represented by some gibbon code in between curly braces (`{ ... }`).
+
 ## Functions, Queries
 Functions are called with **arguments** and a **chain input**.  A function call looks like:
 
@@ -274,11 +277,11 @@ Returns the sum of a list of numbers.
 
 #### `max = [numeric] -> numeric`
 
-Returns the maximum element of a list of numbers.
+Returns the maximum element of a list of numbers. Given an empty list, this is missing.
 
 #### `min = [numeric] -> numeric`
 
-Returns the minimum element of a list of numbers.
+Returns the minimum element of a list of numbers. Given an empty list, this is missing.
 
 #### `case-sum [bool : numeric] = % -> numeric`
 
@@ -380,29 +383,43 @@ Queries always take an entity as input.
 
 #### `@:access[field-name]`
 
+Type: inferred from the field configuration.
+
 Equivalent to `@field-name`.  Returns the value of the entity at the field `field-name`. This is missing if the entity has no value at the given field.
 
 #### `@:on[catalog-name]`
+
+Type: boolean
 
 Returns true if the input entity is on the catalog (usually a hazard list or similar).
 
 #### `@:ancestors`
 
+Type: list of entities on the same catalog as the input.
+
 Returns a list entities that are the ancestors (through a Child Entity Field) of the input entity.
 
 #### `@:segments-of[field-name]`
+
+Type: list of strings.
 
 Returns a list of segments matched by the field's required-value regular expression.
 
 #### `@:segment-named[field-name segment-name]`
 
+Type: string
+
 Returns the named match corresponding to segment-name matched by the fields's required-value regular expression.
 
 #### `@:access-with-concentration[field-name]`
 
+Type: `(%a : string)`, where `%a` is inferred from the field configuration.
+
 Returns a pair of (value : concentration) for the field.  Requires the concentration to be a string (for back-compatibility reasons).
 
 #### `@:access-with-numerical-concentration[field-name]`
+
+Type: `(%a : numeric)`, where `%a` is inferred from the field configuration.
 
 Similar to `access-with-concentration`, but expects the concentration to be numeric.
 
@@ -417,9 +434,68 @@ Similar to `access-with-concentration`, but expects the concentration to be nume
 ] }
 ~~~
 
+This example returns a list of strings: `['low', 'high', 'high']`.
+
+We've started with the list `[1, 2, 3]`, and *mapped* over it with the `map` function and a block. The block is then called
+with each element as its input.  We send the input through `bucket`, which accepts a list of pairs, indicating the
+delimiters and value for the bucketing operation.  In this case, we've said that anything not exceeding 1 should map to
+'low', and anything not exceeding 3 should map to 'high'.  So 1 is mapped to 'low', and 2 and 3 are mapped to 'high'.
+
 ### case-eq
+
+~~~ gibbon
+@dyeing_method -> case-eq [
+  'not' : 10
+  'waterless' : 8
+  'reduced_water' : 5
+  'traditional' : 0
+  'unknown' : 0
+] | 0
+~~~
+
+This example assigns a score to several possibilities of a string value.
+
+We start by looking up the `@dyeing_method` field of the entity, which returns a string.
+Then we send it through `case-eq` with a list of pairs of test values and result values.
+If `@dyeing_method` is equal to any of the values on the left, this rule will return
+the value on the right.  If it's not equal to any of them, the result of `case-eq` will
+be missing.  In this case we've defaulted that missing possibility to 0, so that our
+rule is never missing.
 
 ### count of bad ingredients
 
+~~~ gibbon
+@ingredients -> filter { @:on[list-of-bad-ingredients] } -> count
+~~~
+
+This example returns the number of "bad ingredients" in the given entity, where "bad ingredient" is defined
+as inclusion on a particular list.
+
+We start by looking up the `@ingredients` field using an access query.  This gives us a list of ingredients,
+since the field is configured as a list EntityField.  Then we pass that through a `filter`, to collect
+all of the ingredients that cause the block to return true.  Inside the block, we query each element with
+`@on:[list-of-bad-ingredients]` to check inclusion in `list-of-bad-ingredients`.  At this point, we have
+a list of the the bad ingredients in the input entity.  Finally, we send this through `count` to count them
+up.
+
 ### weighted average
 
+~~~ gibbon
+weight [*
+  @score-a : 50
+  @score-b : 25
+  @score-c : 25
+*]
+~~~
+
+This example returns a weighted average of the values of fields `@score-a`, `@score-b`, and `@score-c`.
+
+Here we've used the `weight` function for weighted averages.  On the right are the weights associated with
+values on the left.  But there's a wrinkle - here we've used a squish list.  So what happens when `@score-a`
+is missing?  The first thing that happens is that the pair `@score-a : 50` is also missing.  The next is that
+that pair is *removed from the list* because we've used a squish-list (`[* ... *]`).  So we're left with
+a weighted average between the two values `@score-a` and `@score-b`.  Since they have the same weight,
+this results in the regular mean of the two values.
+
+If all three values are missing, we pass `weight` an empty list, which results in missing, since there's
+no way to compute a weighted average of no values.
