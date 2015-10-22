@@ -1,0 +1,91 @@
+/* palette
+cool-as-ice    = #6c8b9f
+slate-blue     = #4e5d62
+eggshell-cloud = #dee5e7
+krasna         = #122B36
+aluminium1     = #fefeec
+scarletred2    = #cc0000
+butter3        = #c4a000
+go-get-it      = #B2FD6D
+chilly         = #A8E1FE
+unicorn        = #faf6e4
+sandy          = #F6DD62
+pink-merengue  = #F696DB
+dune           = #FFF0A6
+backlit        = #4DF4FF
+schrill        = #ffb000
+*/
+
+body {
+  font-family: Input, Monaco, monospace;
+  background-color: #122B36;
+  color: #faf6e4;
+}
+
+a {
+  color: #FFF0A6;
+}
+
+a:visited {
+  color: #c4a000;
+}
+
+#container {
+  margin: 0 auto;
+  width: 1000px;
+}
+
+#configuration, #code {
+  height: 500px;
+  width: 300px;
+}
+
+#entity-index {
+  width: 2em;
+}
+
+.results li {
+  list-style-type: none;
+  border: 1px solid #faf6e4;
+  padding: 5px;
+  margin: 5px;
+}
+
+.results .key {
+  font-weight: bold;
+  color: #A8E1FE;
+}
+
+.results .equals {
+  padding: 5px;
+  color: #4e5d62;
+}
+
+.CodeMirror {
+  float: left;
+  width: 50%;
+}
+
+.dependencies ul {
+  position: relative;
+}
+
+.dependencies li {
+  display: inline-block;
+  background-color: #4e5d62;
+}
+
+#doc {
+  line-height: 1.3em;
+  width: 600px;
+  margin: 0 auto;
+  font-family: Times;
+}
+
+#doc pre {
+  font-family: Input, Monaco, monospace;
+}
+
+#doc h2 {
+  text-decoration: underline;
+}

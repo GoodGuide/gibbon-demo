@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="/public/index.css" />
+  <link rel="stylesheet" href="/public/codemirror.css" />
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script type="text/javascript" src="http://coffeescript.org/extras/coffee-script.js"></script>
+  <script type="text/javascript" src="/vendor/gibbon.browser.dev.js"></script>
+  <script type="text/javascript" src="/public/codemirror.js"></script>
+  <script type="text/javascript" src="/public/gibbon-codemirror.js"></script>
+  <script type="text/javascript" src="/public/coffeescript-codemirror.js"></script>
+  <script type="text/javascript" src="/public/index.js"></script>
+</head>
+
+<body>
+  <form id="container" action="#">
+    <h2>Try Gibbon!</h2>
+    <textarea id="code">
+bad-ingredients := (@ingredients | []) -> filter { @score -> lt 5 } -> count
+
+.bad-ingredients
+    </textarea>
+
+    <textarea id="conf">{
+products:
+  fields:
+    name: t.string()
+    ingredients: t.list(t.entity('ingredients'))
+  values:
+    [ { name: 'Good Product',       ingredients: [ 0, 1 ] }
+      { name: 'Bad Product',        ingredients: [ 0, 2 ] }
+      { name: 'Mysterious Product', ingredients: null } ]
+        
+ingredients:
+  fields:
+    name: t.string()
+    score: t.numeric()
+  values: [ { name: 'Water', score: 10 }
+            { name: 'Juice', score: 8 }
+            { name: 'HFCS',  score: 0 } ]
+}</textarea>
+
+    <div>
+
+    <label for="catalog">Catalog:</label>
+    <input id="catalog" type="text" value="products" />
+
+    <label for="entity-index">Input index (0 is first):</label>
+    <input id="entity-index" type="text" value="0" />
+
+    <input id="compute" type="submit" value="compute!" />
+
+    <br />
+
+    <a id="docs" href="/doc">Documentation</a>
+    </div>
+
+    <!-- div id="semantics" class="results">
+      <h3>Semantics:</h3>
+      <ul></ul>
+    </div -->
+
+    <div id="evaluations" class="results">
+      <h3>Evaluations:</h3>
+      <ul class="values"></ul>
+      <ul class="errors">
+    </div>
+  </form>
+
+</body>
+</html>

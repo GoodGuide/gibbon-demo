@@ -1,0 +1,24 @@
+{
+  "name": "gibbon",
+  "version": "0.14.0",
+  "description": "A data language",
+  "keywords": ["language"],
+  "author": "Jeanine Adkisson <jeanine.adkisson@gmail.com>",
+  "repository": "git://github.com/GoodGuide/gibbon",
+
+  "files": ["index.js", "src", "test", "Makefile", "package.json"],
+  "main": "index.js",
+  "devDependencies": {
+    "mocha": "1.8.x",
+    "chai": "1.5.x",
+    "coffee-script": "1.6.x",
+    "supervisor": "0.5.x"
+  },
+  "dependencies": {
+    "parsimmon": "0.6.x",
+    "falafel": "0.2.x"
+  },
+  "scripts": {
+    "test": "make test"
+  }
+}
