@@ -1,1 +1,1 @@
-web: make demo-server
+web: bundle exec unicorn
