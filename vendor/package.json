@@ -1,6 +1,6 @@
 {
   "name": "gibbon",
-  "version": "0.14.2",
+  "version": "0.14.3",
   "description": "A data language",
   "keywords": ["language"],
   "author": "Jeanine Adkisson <jeanine.adkisson@gmail.com>",

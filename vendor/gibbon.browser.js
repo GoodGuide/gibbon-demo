@@ -459,7 +459,7 @@ Thunk = (function() {
 inspectNative = function(o) {
   switch (typeof o) {
     case 'string':
-      return "\"" + o + "\"";
+      return "'" + o + "'";
     case 'number':
       return "" + o;
     case 'boolean':
@@ -6225,7 +6225,7 @@ Value = Gibbon.Value = Value = (function(_super) {
     return this.cases({
       list: function(els) {
         var e;
-        return "(list " + (((function() {
+        return "[" + (((function() {
           var _i, _len, _results;
           _results = [];
           for (_i = 0, _len = els.length; _i < _len; _i++) {
@@ -6233,13 +6233,34 @@ Value = Gibbon.Value = Value = (function(_super) {
             _results.push(e.inspect());
           }
           return _results;
-        })()).join(' ')) + ")";
+        })()).join(', ')) + "]";
       },
       pair: function(first, second) {
-        return "(pair " + (first.inspect()) + " " + (second.inspect()) + ")";
+        var _1, _2;
+        _1 = first.cases({
+          pair: (function() {
+            return "(" + (first.inspect()) + ")";
+          }),
+          other: function() {
+            return first.inspect();
+          }
+        });
+        _2 = second.cases({
+          pair: (function() {
+            return "(" + (second.inspect()) + ")";
+          }),
+          other: function() {
+            return second.inspect();
+          }
+        });
+        return "" + _1 + " : " + _2;
       },
       entity: function(id) {
-        return "(entity " + id + ")";
+        return "<entity " + id + ">";
+      },
+      string: inspectNative,
+      block: function(f) {
+        return "{ <block> }";
       },
       other: function() {
         return '' + this.asPrimitive();
